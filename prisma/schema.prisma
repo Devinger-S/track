@@ -1,14 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+ 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL") 
-  // Only needed when using a cloud provider that doesn't support the creation of new databases, like Heroku. Learn more: https://pris.ly/d/migrate-shadow
+  // Uses connection pooling
+  url = env("POSTGRES_PRISMA_URL")
+  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+  // or you'll have dangling databases from migrations
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
-
-generator client {
-  provider        = "prisma-client-js"
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String
