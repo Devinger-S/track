@@ -12,24 +12,24 @@ import { revalidatePath } from 'next/cache';
 export default async function Home() {
 
  const data = await auth()
- const userId = data?.user?.id;
-if (!userId) {
-  throw new Error("User ID is required to create a new project");
-}
  const generateProjects = async () => {
   'use server'
-  const clients = await prisma.client.createMany({
-   data: [
-{name:'client1',
+ if (data) {
+  await prisma.client.createMany({
+    data: [
+ {name:'client1',
+  userId:'clutmsom000008r8uh08b2f8v',
+ },
+ {name:'client2',
  userId:'clutmsom000008r8uh08b2f8v',
-},
-{name:'client2',
-userId:'clutmsom000008r8uh08b2f8v',
-}
-   ]
-  })
-  revalidatePath('/')
  }
+    ]
+   })
+   revalidatePath('/')
+  }
+ } 
+  
+  
  const clients = await prisma.client.findMany()
  // console.log('user',user)
   return (
