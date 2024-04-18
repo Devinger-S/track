@@ -1,27 +1,22 @@
 'use client'
 import React from "react";
 import {Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Link, Button, Avatar} from "@nextui-org/react";
-import {AcmeLogo} from "@/components/ui/AcmeLogo";
-// import { signIn, signOut } from "auth";
-import { useSession } from "next-auth/react";
+import {AcmeLogo} from "@/components/ui/svg/AcmeLogo";
 import { SignOut } from "./ui/SignOutButton";
 import { SignInButton } from "./ui/SignInButton";
-import Image from "next/image";
 
 export default function NavbarNextUI({session}:any) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const menuItems = [
-    "Tracker",
+    "Track",
     "Profile",
     "Dashboard",
-    "Activity",
     "Analytics",
-    "Log Out",
   ];
   
-console.log(session)
   return (
     <Navbar
+     id="navabar"
       isBordered
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
@@ -61,34 +56,15 @@ console.log(session)
       </NavbarContent>
 
       <NavbarContent justify="end">
-       <NavbarItem>
-
-       </NavbarItem>
-        
         <NavbarItem>
-         {session && session.user ?
-         (<div className="flex gap-3">
-         <SignOut />
+         {session && session.user &&
+         (<div className="md:visible flex gap-3">
          <Avatar showFallback isBordered color="success" 
          name={session?.user?.name ?? undefined } 
          src={session?.user?.image ?? undefined}
          />
-        
          </div>)
-         :
-         (<>
-
-         <div className="flex gap-3">
-         <SignInButton />
-         {/* <button onClick={() => signIn()}>out</button> */}
-         <Avatar showFallback isBordered color="success" 
-         name={session?.user?.name ?? undefined } 
-         src={session?.user?.image ?? undefined}
-         />
-
-         </div>
-         </>
-         )}
+         }
         </NavbarItem>
       </NavbarContent>
 
@@ -98,15 +74,32 @@ console.log(session)
             <Link
               className="w-full"
               color={
-                index === 2 ? "warning" : index === menuItems.length - 1 ? "danger" : "foreground"
+                index === 0 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
               }
-              href="#"
+              href={`/${item}`.toLowerCase()}
               size="lg"
             >
               {item}
             </Link>
           </NavbarMenuItem>
         ))}
+        <NavbarItem>
+         {session && session.user ?
+         (<div className="md:visible flex gap-3">
+         <SignOut />
+         <Avatar showFallback isBordered color="success" 
+         name={session?.user?.name ?? undefined } 
+         src={session?.user?.image ?? undefined}
+         />
+         </div>)
+         :
+
+         (<>
+         <SignInButton />
+         </>
+
+         )}
+        </NavbarItem>
       </NavbarMenu>
     </Navbar>
   );

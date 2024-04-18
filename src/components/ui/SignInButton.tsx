@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/react";
 export  function SignInButton() {
  return (
   <>
-  <Button onClick={async () => await LogIn()}>LogIn</Button>
+  <Button  color='success'onClick={async () => await LogIn()}>LogIn</Button>
   </>
  //  <form 
  //  action={LogIn}

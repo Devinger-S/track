@@ -20,10 +20,10 @@ export default async function RootLayout({
  const session = await auth()
 
   return (
-    <html lang="en" >
+    <html lang="en" suppressHydrationWarning className=" antialiased">
       <body className={cn('w-screen h-screen flex flex-col  relative ',)}>
        <Providers>
-       <NavbarNextUI session={session}  />
+        {/* <NavbarNextUI session={session}  /> */}
         {children}
        </Providers>
        </body>

@@ -8,7 +8,7 @@ datasource db {
   url = env("POSTGRES_PRISMA_URL")
   // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
   // or you'll have dangling databases from migrations
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  // directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 model Account {
   id                 String  @id @default(cuid())
@@ -66,7 +66,7 @@ model Activity {
   endAt     DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime
-  userId String @unique
+  userId String 
   clientId  String?
   projectId String?
   Client    Client?   @relation(fields: [clientId], references: [id])
@@ -78,10 +78,10 @@ model Activity {
 model Client {
   id        String     @id @default(dbgenerated("concat('cli_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
   name      String
-  userId String 
+  userId    String 
   color     String?
   createdAt DateTime   @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime   @updatedAt
   Activity  Activity[]
   Project   Project[]
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -92,9 +92,9 @@ model Project {
   name      String
   color     String?
   createdAt DateTime   @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime   @updatedAt
   clientId  String?
-  userId String @unique
+  userId    String 
   Activity  Activity[]
   Client    Client?    @relation(fields: [clientId], references: [id])
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)

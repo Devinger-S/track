@@ -1,6 +1,6 @@
 'use client'
-import { Button } from "@nextui-org/react";
 import { ComponentPropsWithoutRef } from "react";
+import { Button } from "./button";
 
 
 type Props = ComponentPropsWithoutRef<'button'> & {
@@ -10,10 +10,10 @@ type Props = ComponentPropsWithoutRef<'button'> & {
  export const ButtonServerAction:React.FC<Props> = ({onClick,...props}) => {
  return (
   
-  <button onClick={async () => {
+  <Button onClick={async () => {
    if (onClick) await onClick();
   }
-  }>{props.children}</button>
+  }>{props.children}</Button>
    
   
  )
