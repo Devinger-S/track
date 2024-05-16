@@ -35,7 +35,7 @@ export const authConfig = {
    ],
    events: {
     signIn: async ({ user, account, profile }) => {
-     // console.log('User signed in:', user);
+     console.log('User signed in:', user);
      // console.log('Account:', account);
      // console.log('Profile:', profile);
   
@@ -43,21 +43,10 @@ export const authConfig = {
   
    },
   callbacks: {
-authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user
-      const paths = ["/", "/track"]
-      const isProtected = paths.some((path) => nextUrl.pathname.startsWith(path))
-
-      if (isProtected && !isLoggedIn) {
-        const redirectUrl = new URL("api/auth/signin", nextUrl.origin)
-        redirectUrl.searchParams.append("callbackUrl", nextUrl.href)
-        return Response.redirect(redirectUrl)
-      }
-      
-      return true
-    },
-    
-    
+   authorized({ auth, request: { nextUrl } }) {
+    if (nextUrl.pathname = "/track") return !!auth
+    return true
+   },
   },
 } satisfies NextAuthConfig;
 

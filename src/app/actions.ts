@@ -1,4 +1,5 @@
 'use server'
+import prisma from "@/lib/prisma"
 import { signIn, signOut } from "auth"
 
 import { revalidatePath } from "next/cache"
@@ -10,6 +11,29 @@ export async function LogOut() {
 
 export async function LogIn() {
  await signIn()
+}
+export async function createProject(userId: string, name: string) {
+ 'use server'
+ return await prisma.project.create({
+    data:{userId,name,}
+ });
+}
+
+export async function deleteActivity(id: string) {
+    await prisma?.activity.delete({
+        where: {
+            id: id,
+        },
+
+    })
+    revalidatePath('/track')
+}
+export async function createClient(userId:string,name:string) {
+ await prisma.client.create({
+  data: {
+   userId,name
+  }
+ })
 }
 // export async function updateActivity(data: FormData) {
 //  console.log('data server action', data)

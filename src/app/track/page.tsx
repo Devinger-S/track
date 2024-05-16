@@ -1,23 +1,19 @@
-import {Button} from '@nextui-org/button';
 import { auth} from 'auth';
 import prisma from '@/lib/prisma';
-import { faker } from '@faker-js/faker';
-import { ButtonServerAction } from '@/components/ui/ButtonServerAction';
 import { revalidatePath } from 'next/cache';
 import { DailyActivitiesprops, NewActivityProps } from '@/types/types';
-import { Session } from 'next-auth';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger } from '@/components/ui/select';
 import { Building2, FolderOpenDot, Pause, Play } from 'lucide-react';
 import ActivityDuration from '@/components/tanStackTable/duration';
-import { cn } from '@/utils/cn';
 import { DataTable } from '@/components/tanStackTable/data-table';
 import { columns } from '@/components/tanStackTable/columns';
-import { connect } from 'http2';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+
 
 export default async function Track() {
  const NewActivity = ({ activity, clients, projects }: NewActivityProps) => {
-
   async function upsertActivity(data: FormData) {
    'use server'
    try {
@@ -27,13 +23,11 @@ export default async function Track() {
     const project = data.get('project') as string
     console.log(data)
     if (session && session.user && session.user.id ) {
-     
       await prisma.activity.create({data:{
        userId:session.user.id,
        startAt:new Date(),
        updatedAt:new Date(),
        name: data.get('name') as string
-
       } 
      })
     revalidatePath('/track')
@@ -41,16 +35,7 @@ export default async function Track() {
    } catch (error) {
     console.error('Error in upsertActivity:', error);
    }
-  
- 
   }
-  async function deleteACtivity(currentActivity:any) {
-   'use server'
-   await prisma.activity.delete({
-    where:{id:currentActivity.id}
-   })
-  }
-
  
   async function stopActivity(data: FormData) {
    'use server'
@@ -68,9 +53,9 @@ export default async function Track() {
  
   }
   return (
-   <div id='NewActivity_wrapper' className='sticky backdrop-blur-xl  w-full px-2 md:pr-16 drop-shadow-md py-2 '>
+   <div id='NewActivity_wrapper' className='sticky backdrop-blur-xl  w-full px-2 md:pr-16 drop-shadow-md  '>
  
-    <h2 className=" mb-2 text-lg font-medium ">What are you working on?</h2>
+    <h2 className=" mb-2 text-lg md:p-2 font-medium ">What are you working on?</h2>
     <form action={activity ? stopActivity : upsertActivity}>
  
      <div id='input wrapper' className="flex flex-col md:flex-row  items-center gap-4 ">
@@ -78,14 +63,14 @@ export default async function Track() {
       <Input type="hidden" name="userId" defaultValue={session?.user?.id || ''} />
       <Input type="hidden" name="id" defaultValue={activity?.id || undefined} />
  
-      <ul className=" flex justify-around w-full" id="buttons-wrapper">
+      <ul className=" flex justify-between gap-4 w-full" id="buttons-wrapper">
            <Select value='client' name="client">
-        <SelectTrigger className="w-[50px]">
-         <Building2  />
+        <SelectTrigger className=" flex items-center justify-around min-w-16 max-w-24   md:py-4">
+         <Building2 size={32} />
         </SelectTrigger>
         <SelectContent>
          <SelectGroup>
-          <SelectLabel>Client</SelectLabel>
+          <SelectLabel>ClientLabel</SelectLabel>
           <SelectItem value="none">None</SelectItem>
           {clients.map((client) => (
  
@@ -98,13 +83,17 @@ export default async function Track() {
        </Select>
  
        <Select name="project">
-        <SelectTrigger className="w-[50px]">
+        <SelectTrigger className="  flex items-center min-w-16 max-w-24 justify-around  py-4">
          <FolderOpenDot size={32} />
         </SelectTrigger>
         <SelectContent>
          <SelectGroup>
-          <SelectLabel>Project</SelectLabel>
+          {/* <SelectLabel>Project</SelectLabel> */}
+          
           <SelectItem value="none">None</SelectItem>
+          <Separator />
+          {/* <InputForm for='client' session={session} /> */}
+          <Separator />
           {projects.map((project) => (
            project.name &&
            <SelectItem value={project.id} key={project.id}>
@@ -114,13 +103,12 @@ export default async function Track() {
          </SelectGroup>
         </SelectContent>
        </Select>
- 
-       {activity &&
-        <ActivityDuration startAt={activity.startAt.toString()} />
-       }
-       <Button
-        className={cn('', activity ? 'bg-red-700' : 'bg-blue-900')}
-        type="submit">{activity ? <Pause /> : <Play />} </Button>
+       <span className='grow-1 min-w-16 flex justify-center items-center'>
+       {activity && <ActivityDuration startAt={activity.startAt.toString()} />}
+
+       </span>
+       {activity ? <Button variant='destructive'><Pause /></Button>: <Button><Play /></Button>}
+       
       </ul>
     </div>
     </form>
@@ -131,9 +119,15 @@ export default async function Track() {
  const DailyActivity = ({ activities, clients, projects }: DailyActivitiesprops) => {
   return (
    <>
-    <div className=" grow flex flex-col">
-     <h2 className=' text-lg font-medium mb-2'>Here is what you`ve done today</h2>
-     <DataTable clients={clients} projects={projects} columns={columns} data={activities} />
+    <div className="flex flex-col overflow-y-auto ">
+     <h2 className=' text-lg font-medium mb-2 md:p-2 '>Here is what you`ve done today</h2>
+     {/* <div className='grow'> */}
+     <DataTable 
+     // clients={clients}
+      // projects={projects}
+       columns={columns} data={activities} />
+
+     {/* </div> */}
     </div>
    </>
   )
@@ -145,12 +139,9 @@ export default async function Track() {
 
  const currentActivity = await prisma.activity.findFirst({
 		where: {
-			// tenantId: user?.tenant?.id,
-			// userId: session?.user?.id,
 			endAt: null,
 		}
 	})
- console.log('curentACtivity*******************************',currentActivity)
  const clients = await prisma.client.findMany({
 		where: {
 			userId: session?.user?.id
@@ -205,12 +196,12 @@ export default async function Track() {
  
 
  return (
-  <main id='TrackPage'className="  flex  flex-col h-full border-red-700 relative   space-y-10">
+  <main id='TrackPage'className="  flex absolute  flex-col  relative   space-y-4 overflow-hidden">
   <NewActivity activity={currentActivity} clients={clients} projects={projects} />
-  <div className="  flex grow   " id="activity-wrapper">
+  {/* <div className="  flex grow   " id="activity-wrapper"> */}
    <DailyActivity clients={clients} projects={projects} activities={dailyActivities} />
 
-  </div>
+  {/* </div> */}
 
  </main> 
  )

@@ -20,7 +20,7 @@ const NavBarMenu = ({ children, content = <Content />, className }: NavBarMenuPr
 	return (
 		<>
 			<DropdownMenu >
-				<DropdownMenuTrigger>
+				<DropdownMenuTrigger className=''>
 					{children}
 				</DropdownMenuTrigger>
 				<DropdownMenuContent asChild>

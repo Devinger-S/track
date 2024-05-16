@@ -22,6 +22,7 @@ import {
 	TableCell,
 	TableHead,
 	TableHeader,
+ TableFooter,
 	TableRow,
 } from "@/components/ui/table"
 import {
@@ -42,8 +43,8 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
 	columns,
 	data,
-	projects,
-	clients
+	// projects,
+	// clients
 
 }: any) {
 
@@ -51,10 +52,12 @@ export function DataTable<TData, TValue>({
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [rowSelection, setRowSelection] = useState({})
+ // const [state,setState] = useState('default')
 
 	const table = useReactTable({
 		data,
 		columns,
+  
 		getCoreRowModel: getCoreRowModel(),
 		onSortingChange: setSorting,
 		getSortedRowModel: getSortedRowModel(),
@@ -77,19 +80,8 @@ export function DataTable<TData, TValue>({
 	// console.log('data-table, table getTableRows,', table.getRowModel().rows[0].getVisibleCells())
 
 	return (
-		<div id='table' className="rounded-md grow  h-[70vh]   overflow-scroll relative ">
-			<div className="flex relative justify-between p-4 " id="table-header-wrapper">
-
-				<DataTableFacetedFilter
-
-					column={table.getColumn("Clients")}
-					title="Clients"
-					data={clients}
-				/>
-
-
-			</div>
-			<Table id='table' className='w-full '>
+		
+			<Table id='table' >
 				<TableHeader>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
@@ -108,12 +100,13 @@ export function DataTable<TData, TValue>({
 						</TableRow>
 					))}
 				</TableHeader>
-				<TableBody>
+				<TableBody >
 					{
 
 						table.getRowModel().rows?.length ? (
 
 							table.getRowModel().rows.map((row) => (
+        
 
 								<TableRow
 									key={row.id}
@@ -134,7 +127,10 @@ export function DataTable<TData, TValue>({
 							</TableRow>
 						)}
 				</TableBody>
+    {/* <TableFooter>
+     <span>footer</span>
+    </TableFooter> */}
 			</Table>
-		</div>
+		// </div>
 	)
 }

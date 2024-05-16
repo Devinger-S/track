@@ -20,7 +20,7 @@ type Props = {
 	activity: Activity
 }
 type EditItemRowProps = Props & {
-	onSave: () => void
+	onSave?: () => void
 }
 type EditDateTimeProps = {
 	name?: string,
@@ -73,25 +73,26 @@ const EditDateTime = ({ name, value, onChange }: EditDateTimeProps) => {
 	)
 }
 
-const EditItemRow = ({ activity, onSave }: EditItemRowProps) => {
+export const EditItemRow = ({ activity, onSave }: EditItemRowProps) => {
 	return (
 
-		<li id='editable_row' key={activity.id} className="py-2">
+		// <li id='editable_row' key={activity.id} className="py-2">
 			<form
+   key={activity.id}
 				className="flex items-center space-x-2"
 				action={async (data) => {
 					await updateActivity(data) //server action
-					onSave() //this is client side execution
+					// onSave() //this is client side execution
 				}} >
-				<input type="hidden" name="id" defaultValue={activity.id} />
+				<Input className='w-0' type="hidden" name="id" defaultValue={activity.id} />
 				<Input autoFocus className='w-full' type="text" name="name" defaultValue={activity.name || ""} />
 				<EditDateTime name='startAt' value={activity.startAt} />
 				<EditDateTime name='endAt' value={activity.endAt || new Date()} />
-				<span className="flex-grow"></span>
+				<span  className="flex-grow"></span>
 				<Button type="submit">Save</Button>
 
 			</form>
-		</li>
+		// </li>
 	)
 
 }

@@ -7,6 +7,7 @@ import { auth } from 'auth'
 import { ButtonServerAction } from './ui/ButtonServerAction'
 import { LogIn } from '@/app/actions'
 import { AcmeLogo } from './ui/svg/AcmeLogo'
+import { Separator } from './ui/separator'
 
 const links = [
 	{ href: '/track', label: 'Track' },
@@ -20,21 +21,22 @@ const Navbar = async () => {
 
 	return (
 		<>
-			<section id='navbar' className=" backdrop-blur-sm z-10  md:container w-full shadow h-16 sticky  inset-0">
-				<div className=" flex items-center py-2 mx-auto space-x-4">
+			<section id='navbar' className=" backdrop-blur-lg z-10     p-2 sticky  inset-0">
+				<div className=" flex items-center ">
 
 					<NavBarMenu>
-						<Menu className='md:hidden' />
-     <Link  className="hidden md:relative px-2 py-1 rounded " href="/">
-     <AcmeLogo />
+     <Link  className="  " href="/">
+						<Menu className='md:hidden ' />
+     {/* <AcmeLogo /> */}
      </Link>
 
 					</NavBarMenu>
 
      
 
-					<Link href="/track" className="hidden md:relative px-2 py-1 rounded hover:bg-slate-100">
+					<Link href="/track" className=" hidden md:relative  rounded hover:bg-slate-100">
 						<span className="font-semibold">Time Tracker</span>
+      {/* <AcmeLogo /> */}
 					</Link>
 					<nav className=''>
 						<ul className="hidden md:flex items-center gap-4">
@@ -61,6 +63,7 @@ const Navbar = async () => {
 					}
 
 				</div>
+    <Separator />
 
 			</section>
 		</>
