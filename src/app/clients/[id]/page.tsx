@@ -58,9 +58,9 @@ export default async function ClientPage({ params }: ClientPageProps) {
 	}
 
 	return (
-		<div id='client' className="hello">
-			<div className="flex items-center justify-between">
-				<h2 className="mb-2 text-lg font-medium">Client</h2>
+			<div className="flex items-center  gap-4">
+				{/* <h2 className="mb-2 text-lg font-medium">Client</h2> */}
+			<h3>{client.name}</h3>
 				<Dialog>
 					<DropdownMenu>
 						<DropdownMenuTrigger>
@@ -94,8 +94,6 @@ export default async function ClientPage({ params }: ClientPageProps) {
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>
-			</div>
-			<h3>{client.name}</h3>
 		</div>
 	)
 }
