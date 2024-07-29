@@ -7,46 +7,27 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter"
 
-// const credentialsConfig = CredentialsProvider({
-//   name: "Credentials",
-//   credentials: {
-//     username: {
-//       label: "User Name",
-//     },
-//     password: {
-//       label: "Password",
-//       type: "password",
-//     },
-//   },
-//   async authorize(credentials) {
-//     if (credentials.username === "sk" && credentials.password === "123")
-//       return {
-//         name: "Vahid",
-//       };
-//     else return null;
-//   },
-// });
 
 export const authConfig = {
- adapter: PrismaAdapter(prisma),
- secret:'019f21cd217855d2230d085898ee1aaf9f9a474896c29a461b180e8a70a0e858',
+  adapter: PrismaAdapter(prisma),
+  secret: '019f21cd217855d2230d085898ee1aaf9f9a474896c29a461b180e8a70a0e858',
   providers: [Google,
     // credentialsConfig
-   ],
-   events: {
+  ],
+  events: {
     signIn: async ({ user, account, profile }) => {
-     console.log('User signed in:', user);
-     // console.log('Account:', account);
-     // console.log('Profile:', profile);
-  
+      console.log('User signed in:', user);
+      // console.log('Account:', account);
+      // console.log('Profile:', profile);
+
     }
-  
-   },
+
+  },
   callbacks: {
-   authorized({ auth, request: { nextUrl } }) {
-    if (nextUrl.pathname = "/track") return !!auth
-    return true
-   },
+    authorized({ auth, request: { nextUrl } }) {
+      if (nextUrl.pathname = "/track") return !!auth
+      return true
+    },
   },
 } satisfies NextAuthConfig;
 

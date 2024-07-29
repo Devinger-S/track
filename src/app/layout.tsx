@@ -5,11 +5,18 @@ import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster"
 import Navbar from "@/components/navbar";
 import { Metadata } from "next";
+import SideBarNav from "@/components/SideBarNav";
 
-const inter = Inter({ subsets: ["latin"] });
+import Link from 'next/link'
+import { Avatar } from '@/components/Avatar'
+import { ThemeToggle } from "@/components/theme-toggle"
+import { Menu } from 'lucide-react'
+import { auth } from 'auth'
+import { ButtonServerAction } from '@/components/ui/ButtonServerAction'
+import { LogIn } from '@/app/actions'
 
 export const metadata: Metadata = {
-   title: "Track",
+  title: "Track",
   description: "Track your time",
 };
 
@@ -19,16 +26,34 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
+  const session = await auth()
+
   return (
     <html lang="en" suppressHydrationWarning className=" antialiased">
-      <body className={cn(' h-screen flex flex-col  relative ',)}>
-       <Providers>
+      <body className={cn(' min-h-screen flex w-full flex-col   relative ',)}>
+        <Providers>
+          <section id='navbarforMobile' className='sm:hidden max-w-screen w-screen fixed h-16 flex items-center  top-0'>
+            <SideBarNav />
+            <span className="flex-grow" />
+            <ThemeToggle />
+            {session && session.user ?
+              <Avatar user={session.user} />
+              :
+              <ButtonServerAction onClick={LogIn} >Log In</ButtonServerAction>
 
-        <Navbar />
-        {children}
-       </Providers>
-       <Toaster />
-       </body>
+
+            }
+          </section>
+          <section className="hidden sm:flex"><SideBarNav /></section>
+          <section id='mainContent' className='sm:ml-16 grow sm:p-4'>
+
+
+            {children}
+          </section>
+
+        </Providers>
+        <Toaster />
+      </body>
     </html>
   );
 }
