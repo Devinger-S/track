@@ -1,6 +1,6 @@
 "use client"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowRight, ArrowUpDown } from "lucide-react"
+import { ArrowRight, ArrowUpDown, Delete } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,9 @@ import { Button } from "../ui/button"
 import { EditIcon } from "../ui/svg/EditICon"
 import { EditItemRow } from "./activity-item-row"
 import { DeleteIcon } from "../ui/svg/DeleteIcon"
+import { ButtonServerAction } from "../ui/ButtonServerAction"
+import { deleteActivity } from "@/app/actions"
+import { deleteClient } from "./actions"
 
 
 export const columns: ColumnDef<any>[] = [
@@ -108,20 +111,22 @@ export const columns: ColumnDef<any>[] = [
               </DialogHeader>
             </DialogContent>
           </Dialog>
-          <Dialog >
-            <DialogTrigger asChild><Button size='sm' variant='destructive' className=" hover:scale-110 " ><DeleteIcon /></Button></DialogTrigger>
-            <DialogContent className="max-w-full w-full">
-              <DialogHeader>
-                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                <DialogDescription asChild>
-                  <>
-                    {/* <EditItemRow activity={row.original} /> */}
-                    <pre>{JSON.stringify(row.original, null, 2)}</pre>
-                  </>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <ButtonServerAction onClick={() => deleteActivity(row.original.id)} size='sm' variant='destructive' className=" hover:scale-110 " ><DeleteIcon /></ButtonServerAction>
+          {/* <Button size='sm' onClick={(id) => deleteActivity(id)} variant='destructive'><DeleteIcon /></Button> */}
+          {/* <Dialog > */}
+          {/*   <DialogTrigger asChild><Button size='sm' variant='destructive' className=" hover:scale-110 " ><DeleteIcon /></Button></DialogTrigger> */}
+          {/*   <DialogContent className="max-w-full w-full"> */}
+          {/*     <DialogHeader> */}
+          {/*       <DialogTitle>Are you absolutely sure?</DialogTitle> */}
+          {/*       <DialogDescription asChild> */}
+          {/*         <> */}
+          {/*           {/* <EditItemRow activity={row.original} /> */}
+          {/*           <pre>{JSON.stringify(row.original, null, 2)}</pre> */}
+          {/*         </> */}
+          {/*       </DialogDescription> */}
+          {/*     </DialogHeader> */}
+          {/*   </DialogContent> */}
+          {/* </Dialog> */}
         </span>
       )
     }
