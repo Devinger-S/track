@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Building2, FolderOpenDot, Pause, Play } from 'lucide-react';
 import ActivityDuration from '@/components/tanStackTable/duration';
 import { DataTable } from '@/components/tanStackTable/data-table';
-import { columns } from '@/components/tanStackTable/columns';
+import { columns } from '@/components/tanStackTable/columnsTrack';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 
@@ -54,9 +54,9 @@ export default async function NewActivity({ activity, clients, projects }: NewAc
 
   }
   return (
-    <div id='NewActivity_wrapper' className='sticky backdrop-blur-xl  w-full px-2 md:pr-16 drop-shadow-md  '>
+    <div id='NewActivity_wrapper' className='backdrop-blur-xl  w-full p-2 md:pr-16 drop-shadow-md  '>
 
-      <h2 className=" mb-2 text-lg md:p-2 font-medium ">What are you working on?</h2>
+      <h2 className=" mb-2 hidden text-lg   md:p-2 font-medium ">What are you working on?</h2>
       <form >
 
         <div id='input wrapper' className="flex flex-col md:flex-row  items-center gap-4 ">

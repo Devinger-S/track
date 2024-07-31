@@ -1,4 +1,4 @@
-import { Package2, Home, ShoppingCart, Package, Users2, LineChart, Settings, PanelLeft, Timer } from "lucide-react";
+import { Home, Users2, LineChart, PanelLeft, Timer } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -110,6 +110,13 @@ export default async function SideBarNav() {
             >
               <Home className="h-5 w-5" />
               Home
+            </Link>
+            <Link
+              href="/track"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <Timer className="h-5 w-5" />
+              Track
             </Link>
             <Link
               href="/clients"

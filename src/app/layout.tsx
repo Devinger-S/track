@@ -32,7 +32,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning className=" antialiased">
       <body className={cn(' min-h-screen flex w-full flex-col   relative ',)}>
         <Providers>
-          <section id='navbarforMobile' className='sm:hidden max-w-screen w-screen fixed h-16 flex items-center  top-0'>
+          <section id='navbarforMobile' className='sm:hidden px-2 max-w-screen w-screen fixed h-16 flex items-center  top-0'>
             <SideBarNav />
             <span className="flex-grow" />
             <ThemeToggle />
@@ -45,7 +45,7 @@ export default async function RootLayout({
             }
           </section>
           <section className="hidden sm:flex"><SideBarNav /></section>
-          <section id='mainContent' className='sm:ml-16 grow sm:p-4'>
+          <section id='mainContent' className='sm:ml-16 grow  mt-16 sm:mt-0'>
 
 
             {children}

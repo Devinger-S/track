@@ -50,6 +50,7 @@ model User {
   project Project[]
 }
 
+
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -66,11 +67,11 @@ model Activity {
   endAt     DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime
-  userId String 
+  userId    String 
   clientId  String?
   projectId String?
-  Client    Client?   @relation(fields: [clientId], references: [id])
-  Project   Project?  @relation(fields: [projectId], references: [id])
+  client    Client?   @relation(fields: [clientId], references: [id])
+  project   Project?  @relation(fields: [projectId], references: [id])
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 }
@@ -82,9 +83,8 @@ model Client {
   color     String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  Activity  Activity[]
-  Project   Project[]
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity  Activity[]
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Project {
@@ -93,11 +93,10 @@ model Project {
   color     String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  clientId  String?
   userId    String 
-  Activity  Activity[]
-  Client    Client?    @relation(fields: [clientId], references: [id])
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientId  String?
+  activity  Activity[]
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Plan {

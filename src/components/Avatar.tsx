@@ -1,5 +1,4 @@
 'use client'
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +13,7 @@ import { LogOut } from '@/app/actions'
 export const Avatar = ({ user }: { user: Session['user'] }) => (
   <DropdownMenu >
     <DropdownMenuTrigger>
-      <RootAvatar>
+      <RootAvatar  >
         {user?.image && (
           <AvatarImage src={user.image} referrerPolicy="no-referrer" />
         )}

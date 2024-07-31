@@ -6,35 +6,37 @@ import { revalidatePath } from "next/cache"
 
 
 export async function LogOut() {
- await signOut()
+  await signOut()
 }
 
 export async function LogIn() {
- await signIn()
+  await signIn()
 }
 export async function createProject(userId: string, name: string) {
- 'use server'
- return await prisma.project.create({
-    data:{userId,name,}
- });
+  'use server'
+  return await prisma.project.create({
+    data: { userId, name, }
+  });
 }
 
 export async function deleteActivity(id: string) {
-    await prisma?.activity.delete({
-        where: {
-            id: id,
-        },
+  await prisma?.activity.delete({
+    where: {
+      id: id,
+    },
 
-    })
-    revalidatePath('/track')
+  })
+  revalidatePath('/track')
 }
-export async function createClient(userId:string,name:string) {
- await prisma.client.create({
-  data: {
-   userId,name
-  }
- })
+export async function createClient(userId: string, name: string) {
+  await prisma.client.create({
+    data: {
+      userId, name
+    }
+  })
 }
+
+
 // export async function updateActivity(data: FormData) {
 //  console.log('data server action', data)
 //  await prisma?.activity.update({
@@ -59,7 +61,7 @@ export async function createClient(userId:string,name:string) {
 //  revalidatePath('/track')
 // }
 // const generateProjects = async () => {
- 
+
 // if (data) {
 //  await prisma.client.createMany({
 //    data: [
