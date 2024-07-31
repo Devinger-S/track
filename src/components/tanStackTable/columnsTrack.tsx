@@ -69,7 +69,7 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       return (
         <>
-          {row.original.name ? row.original.name : 'no client'}
+          {row.original.clientId ? row.original.client.name : '-'}
         </>
       )
     }
@@ -80,9 +80,10 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: 'Project',
     header: 'Project',
     cell: ({ row }) => {
+      console.log('from row.original projects', row.original)
       return (
         <>
-          {row.original.name ? row.original.name : 'no project'}
+          {row.original.projectId ? row.original.project.name : '-'}
         </>
       )
     }

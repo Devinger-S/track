@@ -39,8 +39,8 @@ export default async function Track() {
       'use server'
       const project = data.get('project') as string
       const client = data.get('client') as string
-      // console.log(`this is client ${client}`)
-      // console.log(`this is project ${project}`)
+      console.log(`this is client ${client}`)
+      console.log(`this is project ${project}`)
       const activity = await prisma.activity.update({
         where: {
           id: data.get('id') as string
@@ -236,7 +236,6 @@ export default async function Track() {
       startAt: 'desc'
     }
   })
-
 
   return (
     <main id='TrackPage' className="  flex h-screen  flex-col  relative   space-y-4 overflow-hidden">

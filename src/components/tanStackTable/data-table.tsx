@@ -59,6 +59,7 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
 
   })
+  console.log(`this is the data ${data}`)
 
   return (
 

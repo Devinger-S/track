@@ -1,9 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-// import CredentialsProvider from "next-auth/providers/credentials";
-import { redirect } from "next/navigation";
-// import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter"
 
