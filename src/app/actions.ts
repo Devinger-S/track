@@ -4,7 +4,17 @@ import { signIn, signOut } from "auth"
 
 import { revalidatePath } from "next/cache"
 
-
+   export async function onCreateClient(data: FormData) {
+        "use server";
+        await prisma.client.create({
+          data: {
+            userId: data.get("id") as string,
+            name: data.get("name") as string,
+            color: data.get("color") as string,
+          },
+        });
+        revalidatePath("/track");
+      }
 export async function LogOut() {
   await signOut()
 }

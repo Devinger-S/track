@@ -4,6 +4,7 @@ export type NewActivityProps = {
   activity?: Activity | null
   clients: Client[]
   projects: Project[]
+  user:User
 }
 
 export type DailyActivitiesprops = {

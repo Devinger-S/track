@@ -10,19 +10,23 @@ import { DataTable } from '@/components/tanStackTable/data-table';
 import { columns } from '@/components/tanStackTable/columnsTrack';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import  SelectClient  from '@/components/selectClient';
 
 
 export default async function Track() {
+        const { user }: any = await auth()
 
-  const NewActivity = ({ activity, clients, projects }: NewActivityProps) => {
+  const NewActivity = ({ activity, clients, projects,user }: NewActivityProps) => {
+
+  
     async function upsertActivity(data: FormData) {
       'use server'
       try {
-        const session = await auth()
-        if (session && session.user && session.user.id) {
+        // const session = await auth()
+        if (  user && user.id) {
           await prisma.activity.create({
             data: {
-              userId: session.user.id,
+              userId: user.id,
               startAt: new Date(),
               updatedAt: new Date(),
               name: data.get('name') as string
@@ -55,18 +59,7 @@ export default async function Track() {
       revalidatePath('/track')
     }
 
-    async function onCreateClient(data: FormData) {
-      'use server'
-      const { user }: any = await auth()
-      await prisma.client.create({
-        data: {
-          userId: user.id,
-          name: data.get('name') as string,
-          color: data.get('color') as string
-        }
-      })
-      revalidatePath('/track')
-    }
+    
     async function onCreateProject(data: FormData) {
       'use server'
       const { user }: any = await auth()
@@ -92,26 +85,7 @@ export default async function Track() {
 
             <ul className=" flex flex-col sm:flex-row   justify-between gap-4 w-full" id="buttons-wrapper">
               <li id='select-wrapper' className='flex gap-2  justify-center'>
-                <Select name="client">
-                  <SelectTrigger className=" flex items-center justify-around w-fit min-w-16 max-w-24   md:py-4">
-                    <Building2 size={32} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <form action={onCreateClient}>
-                        <Input placeholder='Add a client' name="name" type="text" />
-                      </form>
-                      <SelectItem value='null'>None</SelectItem>
-                      {clients.map((client) => (
-
-                        <SelectItem value={client.id} key={client.id}>
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-
+                <SelectClient user={user} clients={clients} />
                 <Select name="project">
                   <SelectTrigger className="  w-fit flex items-center min-w-16 max-w-24 justify-around  py-4">
                     <FolderOpenDot size={32} />
@@ -204,16 +178,7 @@ export default async function Track() {
     59
   )
 
-  const users = await prisma.user.findMany({
-    where: {
-      id: session?.user?.id,
-    },
-    include: {
-      activity: true,
-      client: true,
-      project: true,
-    }
-  })
+  
   const dailyActivities = await prisma.activity.findMany({
     where: {
       userId: session?.user?.id,
@@ -239,7 +204,7 @@ export default async function Track() {
 
   return (
     <main id='TrackPage' className="  flex h-screen  flex-col  relative   space-y-4 overflow-hidden">
-      <NewActivity activity={currentActivity} clients={clients} projects={projects} />
+      <NewActivity activity={currentActivity} clients={clients} projects={projects} user={user} />
       {/* <div className="  flex grow   " id="activity-wrapper"> */}
       <DailyActivity clients={clients} projects={projects} activity={dailyActivities} />
 
