@@ -13,7 +13,7 @@ export const authConfig = {
   ],
   events: {
     signIn: async ({ user, account, profile }) => {
-      console.log('User signed in:', user);
+      // console.log('User signed in:', user);
       // console.log('Account:', account);
       // console.log('Profile:', profile);
 

@@ -83,7 +83,7 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: 'Project',
     header: 'Project',
     cell: ({ row }) => {
-      console.log('from row.original projects', row.original)
+      // console.log('from row.original projects', row.original)
       return (
         <>
           {row.original.projectId ? row.original.project.name : '-'}

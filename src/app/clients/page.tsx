@@ -69,7 +69,7 @@ export default async function ClientPage(props: any) {
         </form>
       </div>
       <DataTable
-        columns={columnsClients} data={clients} />
+        columns={columnsClients} clients={clients} />
       {clients.length > 0 ??
         <Blankslate />
       }

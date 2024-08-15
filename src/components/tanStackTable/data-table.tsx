@@ -19,23 +19,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useState } from 'react';
+import { useOptimistic, useState } from 'react';
 
 interface DataTableProps<TData, TValue> {
   columns: any
-  data: any
+  clients: any
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  clients,
 }: any) {
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
-  // const [state,setState] = useState('default')
+  const [data, addOptimisticClient] = useOptimistic(
+    clients,
+    (state, newClient: any) => {
+      return [...state, newClient];
+    }
+  );
 
   const table = useReactTable({
     data,
@@ -59,7 +64,6 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
 
   })
-  console.log(`this is the data ${data}`)
 
   return (
 

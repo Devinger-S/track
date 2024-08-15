@@ -36,7 +36,6 @@ const EditDateTime = ({ name, value, onChange }: EditDateTimeProps) => {
     d.setSeconds(date.getSeconds())
     setDate(d)
     onChange && onChange(d)
-    console.log('onDate', date)
 
   }
   return (
