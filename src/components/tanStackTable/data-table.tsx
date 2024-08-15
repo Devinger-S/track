@@ -21,10 +21,6 @@ import {
 } from "@/components/ui/table"
 import { useOptimistic, useState } from 'react';
 
-interface DataTableProps<TData, TValue> {
-  columns: any
-  clients: any
-}
 
 export function DataTable<TData, TValue>({
   columns,

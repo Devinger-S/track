@@ -5,8 +5,7 @@ import prisma from '@/lib/prisma';
 import { revalidatePath } from "next/cache"
 
 
-export async function updataClientName(data: FormData) {
-  console.log('data server action', data)
+export async function updateClientName(data: FormData) {
   await prisma?.client.update({
     where: {
       id: data.get('id') as string,

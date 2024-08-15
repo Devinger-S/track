@@ -113,14 +113,18 @@ export const columnsClients: ColumnDef<any>[] = [
                 <DialogDescription asChild>
                   <>
                     <EditClient client={row.original} />
-                    <pre>{JSON.stringify(row.original, null, 2)}</pre>
                   </>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
           </Dialog>
           <Dialog >
-            <DialogTrigger asChild><ButtonServerAction onClick={() => deleteClient(row.original.id)} size='sm' variant='destructive' className=" hover:scale-110 " ><DeleteIcon /></ButtonServerAction></DialogTrigger>
+            <DialogTrigger asChild>
+              <ButtonServerAction onClick={() => deleteClient(row.original.id)} size='sm' variant='destructive' className=" hover:scale-110 " 
+                >
+                  <DeleteIcon />
+                  </ButtonServerAction>
+                  </DialogTrigger>
             <DialogContent className="max-w-full w-full">
               <DialogHeader>
                 <DialogTitle>You are deleting client {row.original.name}</DialogTitle>

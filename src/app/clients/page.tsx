@@ -4,10 +4,10 @@ import { DataTable } from "@/components/tanStackTable/data-table";
 import { Button } from "@/components/ui/button";
 import prisma from '@/lib/prisma';
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { columnsClients } from '@/components/tanStackTable/columsClients';
 import { revalidatePath } from "next/cache";
 import { Input } from "@/components/ui/input";
+import { OptimisticComponent } from "@/components/optimisticComponent";
 
 export default async function ClientPage(props: any) {
 
@@ -53,7 +53,8 @@ export default async function ClientPage(props: any) {
     <section className="h-screen p-4 flex-col   flex  ">
       <div className="">
         <h2 className="text-lg font-medium mb-2">Create a new client</h2>
-        <form action={onCreateClient} className="flex flex-col sm:flex-row w-full items-center gap-4">
+        <OptimisticComponent clients={clients} session={session} />
+        {/* <form action={onCreateClient} className="flex flex-col sm:flex-row w-full items-center gap-4">
           <div className="flex w-full  place-self-start ">
 
             <Input
@@ -66,13 +67,14 @@ export default async function ClientPage(props: any) {
             <Input type="color" name="color" placeholder="Color" className="w-12" />
           </div>
           <Button className='w-full sm:w-fit' type="submit">Create</Button>
-        </form>
+        </form> */}
       </div>
-      <DataTable
-        columns={columnsClients} clients={clients} />
+      {/* <DataTable
+        columns={columnsClients} clients={clients} 
+        />
       {clients.length > 0 ??
         <Blankslate />
-      }
+      } */}
     </section>
   )
 }
