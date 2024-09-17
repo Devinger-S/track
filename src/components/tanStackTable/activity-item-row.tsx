@@ -1,7 +1,7 @@
 'use client'
 import { Input } from "../ui/input"
 import { Activity } from "@prisma/client"
-import { ArrowRight, CalendarIcon } from "lucide-react"
+import { ArrowRight, CalendarIcon, Delete, Edit, Edit2, TimerIcon } from "lucide-react"
 import { useState } from "react"
 import { deleteActivity, updateActivity } from "./actions"
 
@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "../ui/button"
+import { useBreakpoint } from "@/utils/useBreakpoints"
 
 
 type Props = {
@@ -100,38 +101,62 @@ type ReadItemRowProps = Props & {
   onDelete: (id: string) => void,
 }
 const ReadItemRow = ({ activity, edit, onDelete }: ReadItemRowProps) => {
+  const {width} = useBreakpoint()
   return (
-
-    <li key={activity.id} id="read_only" className=" flex gap-4 relative  w-full items-center">
-      <div id='name' className='text-bold text-xl break-words'>
+    <li
+      key={activity.id}
+      id="read_only"
+      className="  group flex gap-4 relative bg-muted p-4  w-full items-center"
+    >
+      <div
+        id="name"
+        className="text-bold   text-2xl min-w-[33%] break-words"
+      >
         {activity.name}
       </div>
-      <div className="flex border-border gap-2 grow" id="">
-        <span >
-          {new Intl.DateTimeFormat(undefined, {
-            hour: 'numeric',
-            minute: 'numeric'
-          }).format(activity.startAt)}
-        </span>
-        <ArrowRight />
-        <span className="bg-red-400">
-          {new Intl.DateTimeFormat('en-US', {
-            hour: 'numeric',
-            minute: 'numeric'
-          }).format(activity.endAt || new Date())}
-        </span>
+      <div className="flex   text-2xl border-border gap-2" id="time">
+        {width > 640 ? (
+          <>
+            <span>
+              {new Intl.DateTimeFormat(undefined, {
+                hour: "numeric",
+                minute: "numeric",
+              }).format(activity.startAt)}
+            </span >
+            <span className="flex justify-center items-center">
+            <ArrowRight />
+
+            </span>
+            <span className="">
+              {new Intl.DateTimeFormat("en-US", {
+                hour: "numeric",
+                minute: "numeric",
+              }).format(activity.endAt || new Date())}
+            </span>
+          </>
+        ) : (
+          <TimerIcon />
+        )}
       </div>
       <span className="flex-grow"></span>
 
-      <span className="">
-        <Button onClick={edit} variant='outline'>Edit</Button>
-        <Button onClick={async () => onDelete(activity.id)}
-          variant='destructive'>Delete</Button>
+      <span className=" invisible group-hover:visible ">
+        <Button onClick={edit} variant="ghost">
+          {width > 768 ? "Edit" : <Edit />}
+        </Button>
+
+        <Button
+          onClick={async () => onDelete(activity.id)}
+          variant="destructive"
+        >
+          {width > 768 ? "Delete" : <Delete />}
+        </Button>
       </span>
     </li>
-  )
+  );
 }
 export const ActivityItemRow = ({ activity }: Props) => {
+  console.log('activity',activity )
   const [isEditing, setIsEditing] = useState(false)
   return isEditing ? (
     <EditItemRow activity={activity} onSave={() => setIsEditing(false)} />

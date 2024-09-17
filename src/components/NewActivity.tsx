@@ -6,11 +6,11 @@ import { DailyActivitiesprops, NewActivityProps } from '@/types/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger } from '@/components/ui/select';
 import { Building2, FolderOpenDot, Pause, Play } from 'lucide-react';
-import ActivityDuration from '@/components/tanStackTable/duration';
 import { DataTable } from '@/components/tanStackTable/data-table';
 import { columns } from '@/components/tanStackTable/columnsTrack';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import ActivityDuration from '@/app/track/components/duration';
 
 
 export default async function NewActivity({ activity, clients, projects }: NewActivityProps) {

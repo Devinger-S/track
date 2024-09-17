@@ -53,7 +53,7 @@ export default async function RootLayout({
          
 
         </Providers>
-        <ThemeToggle className=''/>
+        {/* <ThemeToggle className=''/> */}
         <Toaster />
       </body>
     </html>

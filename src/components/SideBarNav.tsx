@@ -95,39 +95,39 @@ export default async function SideBarNav() {
           </TooltipProvider>
         </nav>
       </aside>
-      <Sheet>
+      <Sheet >
         <SheetTrigger asChild>
           <Button size="icon" variant="outline" className="sm:hidden">
             <PanelLeft className="h-5 w-5" />
             <span className="sr-only">Toggle Menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className=" pl-0 pt-12  sm:max-w-xs">
+        <SheetContent side="left" className=" pl-0 pt-12  sm:max-w-xs bg-muted ">
           <nav className="grid gap-6 text-lg font-medium">
             <Link
               href="/"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-4 px-2.5 "
             >
               <Home className="h-5 w-5" />
               Home
             </Link>
             <Link
               href="/track"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-4 px-2.5 "
             >
               <Timer className="h-5 w-5" />
               Track
             </Link>
             <Link
               href="/clients"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-4 px-2.5 "
             >
               <Users2 className="h-5 w-5" />
               Clients
             </Link>
             <Link
               href="/analytics"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-4 px-2.5 "
             >
               <LineChart className="h-5 w-5" />
               Analytics

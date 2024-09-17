@@ -1,10 +1,10 @@
-import { User, Activity, Client, Project } from '@prisma/client'
+import { User, Activity, Client, Project, Session } from '@prisma/client'
 
 export type NewActivityProps = {
   activity?: Activity | null
   clients: Client[]
   projects: Project[]
-  user:User
+  userId:string 
 }
 
 export type DailyActivitiesprops = {

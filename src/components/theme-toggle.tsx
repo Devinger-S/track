@@ -13,7 +13,7 @@ export function ThemeToggle({className}:{className?:string}) {
 
     return (
         <Button
-        className={cn('absolute',className)}
+        className={cn('',className)}
             variant="ghost"
             size="sm"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}

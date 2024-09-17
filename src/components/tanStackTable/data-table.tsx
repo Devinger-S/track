@@ -24,19 +24,13 @@ import { useOptimistic, useState } from 'react';
 
 export function DataTable<TData, TValue>({
   columns,
-  clients,
+  data,
 }: any) {
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
-  const [data, addOptimisticClient] = useOptimistic(
-    clients,
-    (state, newClient: any) => {
-      return [...state, newClient];
-    }
-  );
 
   const table = useReactTable({
     data,

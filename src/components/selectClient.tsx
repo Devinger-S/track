@@ -1,46 +1,43 @@
 'use client'
-import { Client, User } from "@prisma/client";
-import { Select, SelectTrigger,SelectContent,SelectGroup,SelectItem } from "./ui/select";
-import { Building2 } from "lucide-react";
+import { Client } from "@prisma/client";
+import { Select,SelectValue, SelectTrigger,SelectContent,SelectGroup,SelectItem } from "./ui/select";
+import { BriefcaseBusiness, Building2, CalendarIcon } from "lucide-react";
 import { Input } from "./ui/input";
-import { useOptimistic } from "react";
-import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { useEffect, useOptimistic } from "react";
 import { onCreateClient } from "@/app/actions";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent } from "./ui/popover";
+import { PopoverTrigger } from "@radix-ui/react-popover";
+import { Calendar } from "./ui/calendar";
+import { Card } from "./ui/card";
 
 
-export default  function SelectUser({clients,user}:{clients:Client[],user:User}) {
+export default  function SelectClient({clients,userId}:{clients:Client[],userId:string | undefined}) {
 
    
-
-   
-
-  const [optimisticClients, addOptimisticClient] = useOptimistic(
+  const [ optimisticClients, addOptimisticClient ] = useOptimistic(
     clients,
-    (state, newClient: Client) => {
-      return [...state, newClient];
-    }
-  );
+    (state:Client[], newClient:any) => {
+        return [...state, newClient];
+      }
+    ) 
+    // useEffect(()=>{console.log(optimisticClients)},[optimisticClients]) 
   return (
     <Select name="client">
-      <SelectTrigger  className="inline-flex items-center justify-center rounded px-[15px]  leading-none   shadow-[0_2px_10px] shadow-foreground/10     outline-none"  
+      <SelectTrigger  className="inline-flex items-center justify-center rounded px-[15px] w-fit gap-5  leading-none   shadow-[0_2px_10px] shadow-foreground/10     outline-none"  
       >
-        <SelectValue placeholder="Client…" />
+        <BriefcaseBusiness size={32} className="w-auto"/>
+
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup>
-          <form 
-          action={onCreateClient}>
-            <Input type="hidden" name="id" defaultValue={user?.id || ''} />
-            <Input placeholder="Add a client" name="name" type="text" />
-          </form>
+         
+
           <SelectItem value="null">None</SelectItem>
           {optimisticClients.map((client: Client) => (
             <SelectItem value={client.id} key={client.id}>
               {client.name}
             </SelectItem>
           ))}
-        </SelectGroup>
       </SelectContent>
     </Select>
   );
