@@ -23,8 +23,9 @@ export default  function SelectUser({clients,user}:{clients:Client[],user:User})
   );
   return (
     <Select name="client">
-      <SelectTrigger className=" flex items-center justify-around w-fit min-w-16 max-w-24   md:py-4">
-        <Building2 size={32} />
+      <SelectTrigger  className="inline-flex items-center justify-center rounded px-[15px]  leading-none   shadow-[0_2px_10px] shadow-foreground/10     outline-none"  
+      >
+        <SelectValue placeholder="Client…" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
