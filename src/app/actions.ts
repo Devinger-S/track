@@ -1,9 +1,63 @@
 'use server'
 import prisma from "@/lib/prisma"
-import { signIn, signOut } from "auth"
+import { Client } from "@prisma/client";
+import { auth, signIn, signOut } from "auth"
 
 import { revalidatePath } from "next/cache"
 import { json } from "stream/consumers";
+
+
+
+  export async function onDailyActivities () {
+
+ const session = await auth();
+  const userId = session?.user?.id;
+  const now = new Date();
+
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+
+  const endOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    23,
+    59,
+    59
+  );
+
+  const dailyActivities = await prisma.activity.findMany({
+    where: {
+      userId,
+
+      OR: [
+        {
+          startAt: {
+            equals: startOfToday,
+          },
+        },
+        {
+          endAt: {
+            lte: endOfToday,
+          },
+        },
+      ],
+    },
+    include: {
+      client: true, // Include the related Client if exists
+      project: true, // Include the related Project if exists
+    },
+    orderBy: {
+      startAt: "desc",
+    },
+  });
+  console.log(`this is from onDailyActivities, ${dailyActivities}`)
+  return dailyActivities
+
+  }
 
    export async function onCreateClient(data: FormData) {
         
@@ -54,7 +108,7 @@ export async function deleteActivity(id: string) {
   })
   revalidatePath('/track')
 }
-export async function createClient(userId: string, name: string) {
+export async function createClient({userId, name}:Client) {
   await prisma.client.create({
     data: {
       userId, name

@@ -1,6 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Pause, Play } from "lucide-react";
+
 import {
   Select,
   SelectContent,
@@ -17,62 +18,147 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { currentActivity, stopActivity, upsertActivity } from "@/app/actions";
 import ActivityDuration from "./duration";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import {
+  createClient,
+  createProject,
+  getActivities,
+  getClients,
+  getCurrent,
+  getProjects,
+  postActivity,
+} from "@/utils/api-calls";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { Activity, Client, Project } from "@prisma/client";
 
 const FormSchema = z.object({
-  activity_name: z.string().nullable(),
+  activity_name: z.string().min(1, "Username is required"),
   client: z.string().nullable(),
   project: z.string().nullable(),
   userId: z.string(),
   id: z.string().nullable(),
 });
 
-const NewActivity = ({
-  activity,
-  clients,
-  projects,
-  userId,
-}: NewActivityProps) => {
+const NewActivity = ({ userId }: NewActivityProps) => {
+  const { data: currentActivity } = useQuery<Activity>({
+    queryKey: ["getCurrentActivity"],
+    queryFn: getCurrent,
+  });
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      userId: userId,
-      id: activity?.id,
-      activity_name: activity?.name || null,
+      userId,
+      id: null,
+      activity_name: "",
       project: null,
       client: null,
     },
   });
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  const { reset } = form;
+
+  useEffect(() => {
+    reset({
+      userId: userId,
+      id: currentActivity?.id === "" ? null : currentActivity?.id,
+      activity_name:
+        currentActivity?.id === "" ? "" : (currentActivity?.name as string),
+      project: currentActivity?.projectId ?? null,
+      client: currentActivity?.clientId ?? null,
+    });
+  }, [currentActivity, reset, userId]);
+
+  const { data: projects } = useQuery<Project[]>({
+    queryKey: ["getProjects"],
+    queryFn: getProjects,
+  });
+  const { data: clients } = useQuery<Client[]>({
+    queryKey: ["getClients"],
+    queryFn: getClients,
+  });
+  const useAddNewActivity = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: postActivity,
+      mutationKey: ["addActivity"],
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["getCurrentActivity"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["ActivitiesWhitRelations"],
+        });
+      },
+    });
+  };
+  const { mutate: addNewActivity } = useAddNewActivity();
+
+  const useAddNewClient = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: createClient,
+      mutationKey: ["addClient"],
+      onSuccess: () => {
+        toast({
+          title: "Client added successfully!",
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["getClients"],
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Failed to add client",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+  const { mutate: addNewClient } = useAddNewClient();
+
+  const useAddNewProject = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: createProject,
+      mutationKey: ["addProject"],
+      onSuccess: () => {
+        toast({
+          title: "Project added successfully!",
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["getProjects"],
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Failed to add project",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+  const { mutate: addNewProject } = useAddNewProject();
+
+  const router = useRouter();
+
+  async function onSubmit(newActivity: z.infer<typeof FormSchema>) {
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">
+            {JSON.stringify(newActivity, null, 2)}
+          </code>
         </pre>
       ),
     });
     try {
-      // Send the form data to a backend API endpoint
-      const response = await fetch("/api/activity", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      // Handle the response
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Success:", result);
-        // Optionally display a success message or handle the result
-      } else {
-        console.error("Error:", response.statusText);
-        // Optionally display an error message
-      }
+      addNewActivity(newActivity);
     } catch (error) {
       console.error("Fetch error:", error);
-      // Optionally display an error message
     }
   }
 
@@ -87,9 +173,8 @@ const NewActivity = ({
 
       <Form {...form}>
         <form
-          // action={activity ? stopActivity : upsertActivity}
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex gap-4"
+          className="flex flex-col sm:flex-row gap-4"
         >
           <FormField
             name="activity_name"
@@ -104,8 +189,8 @@ const NewActivity = ({
                       type="string"
                       name="activity_name"
                       autoFocus
-                      autoComplete="name your activity"
-                      value={activity?.name || ""}
+                      value={field.value || (currentActivity?.name as string)}
+                      // onChange={field.onChange}
                     />
                   </FormControl>
                 </FormItem>
@@ -116,18 +201,11 @@ const NewActivity = ({
             name="userId"
             control={form.control}
             render={({ field }) => (
-              <>
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="hidden"
-                      type="text"
-                      name="userId"
-                    />
-                  </FormControl>
-                </FormItem>
-              </>
+              <FormItem className="hidden">
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+              </FormItem>
             )}
           />
           <FormField
@@ -135,81 +213,134 @@ const NewActivity = ({
             control={form.control}
             render={({ field }) => (
               <>
-                <FormItem>
+                <FormItem className="hidden">
                   <FormControl>
-                    <Input
-                      {...field}
-                      className="hidden"
-                      type="text"
-                      name="id"
-                      value={field.value || ""}
-                    />
+                    <Input {...field} type="text" value={currentActivity?.id} />
                   </FormControl>
                 </FormItem>
               </>
             )}
           />
-
-          <FormField
-            name="client"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
+          <div id="clientprojectwrapper" className="flex gap-4 ">
+            <FormField
+              name="client"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
                   <Select
-                    onValueChange={field.onChange} // Update the form state when the value changes
-                    value={field.value || "null"}
+                    onValueChange={field.onChange}
+                    value={field.value || undefined}
                   >
-                    <SelectTrigger className="inline-flex items-center justify-center rounded px-[15px] w-fit gap-5 leading-none shadow-[0_2px_10px] shadow-foreground/10 outline-none">
-                      {/* <BriefcaseBusiness size={32} className="w-auto" /> */}
-                      <span>{field.value || "Clients"}</span>
+                    <SelectTrigger
+                      aria-label="Select Client"
+                      className="inline-flex items-center justify-center rounded px-[15px] w-fit gap-5 leading-none shadow-[0_2px_10px] shadow-foreground/10 outline-none"
+                    >
+                      <span>
+                        {(field.value &&
+                          clients?.find((client) => client.id === field.value)
+                            ?.name) ||
+                          "Clients"}
+                      </span>
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="null">None</SelectItem>
-                      {clients.map((client) => (
-                        <SelectItem value={client.name} key={client.id}>
+                    <SelectContent className="z-100">
+                      <div id="wrapperInputClient">
+                        <Input
+                          placeholder="add a new client"
+                          type="text"
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              const target = e.target as HTMLInputElement; // Type assertion
+                              const newClientName = target.value;
+                              console.log(newClientName, typeof newClientName);
+                              if (newClientName) {
+                                addNewClient({
+                                  name: newClientName,
+                                  userId: userId,
+                                }); // Call the mutation function
+                                target.value = ""; // Clear the input after adding
+                              }
+                            }
+                          }}
+                        />
+                      </div>
+                      <SelectItem value="none">None</SelectItem>
+                      {clients?.map((client) => (
+                        <SelectItem
+                          className="z-100"
+                          value={client.id}
+                          key={client.id}
+                        >
                           {client.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="project"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="project"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
                   <Select
                     onValueChange={field.onChange} // Update the form state when the value changes
                     value={field.value || "null"}
                   >
                     <SelectTrigger className="inline-flex items-center justify-center rounded px-[15px] w-fit gap-5 leading-none shadow-[0_2px_10px] shadow-foreground/10 outline-none">
-                      {/* <BriefcaseBusiness size={32} className="w-auto" /> */}
-                      <span>{field.value || "Project"}</span>
+                      <span>
+                        {(field.value &&
+                          projects?.find(
+                            (project) => project.id === field.value
+                          )?.name) ||
+                          "Projects "}
+                      </span>
                     </SelectTrigger>
                     <SelectContent>
+                      <div id="wrapperProjectInput">
+                        <Input
+                          placeholder="add a new project"
+                          type="text"
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              const target = e.target as HTMLInputElement; // Type assertion
+                              const newProjectName = target.value;
+                              if (newProjectName) {
+                                addNewProject({
+                                  name: newProjectName,
+                                  userId: userId,
+                                });
+                                target.value = "";
+                              }
+                            }
+                          }}
+                        />
+                      </div>
                       <SelectItem value="null">None</SelectItem>
-                      {projects.map((project) => (
-                        <SelectItem value={project.name} key={project.id}>
-                          {project.name}
-                        </SelectItem>
-                      ))}
+                      {projects &&
+                        projects.map((project) => (
+                          <SelectItem value={project.id} key={project.id}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button type="submit">{activity ? <Pause /> : <Play />}</Button>
+                </FormItem>
+              )}
+            />
+            <Button type="submit">
+              {currentActivity ? <Pause /> : <Play />}
+            </Button>
+          </div>
           <span className="grow font-bold font-sans  min-w-16 flex justify-center items-center">
-            {activity && (
-              <ActivityDuration startAt={activity.startAt.toString()} />
+            {currentActivity && currentActivity.startAt && (
+              <ActivityDuration startAt={currentActivity.startAt} />
             )}
-            {!activity && ""}
+            {!currentActivity && ""}
           </span>
         </form>
         <DevTool control={form.control} />

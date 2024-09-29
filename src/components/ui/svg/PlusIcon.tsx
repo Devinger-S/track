@@ -1,7 +1,7 @@
 import React from "react";
-import {IconSvgProps} from "@/types/table_nextUi_types";
+// import {IconSvgProps} from "@/types/table_nextUi_types";
 
-export const PlusIcon = ({size = 24, width, height, ...props}: IconSvgProps) => (
+export const PlusIcon = ({ size = 24, width, height, ...props }: any) => (
   <svg
     aria-hidden="true"
     fill="none"

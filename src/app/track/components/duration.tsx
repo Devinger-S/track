@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { pad } from "@/utils/pad";
 
 type Props = {
-  startAt: string;
+  startAt: Date;
 };
 const ActivityDuration = ({ startAt }: Props) => {
   const [elapsed, setElapsed] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const date = new Date(startAt); // transform startAt prop from string format to Date format
+      const date = new Date(startAt);
       const elapsed = now.getTime() - date.getTime();
       setElapsed(elapsed);
     }, 1000);
