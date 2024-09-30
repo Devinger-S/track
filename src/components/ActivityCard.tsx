@@ -18,52 +18,38 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Client } from "@prisma/client";
+import { Activity, Client } from "@prisma/client";
+import { getTimeDifference } from "@/utils/format-date";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "rgb(0 0 0)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-];
+export function ActivityCard({ activity }: { activity: Activity }) {
+  const chartConfig = {
+    Total: {
+      label: "hours",
+    },
+    activity: {
+      label: "activity",
+      color: "210, 80%, 50%",
+    },
+  } satisfies ChartConfig;
+  const chartData = [
+    { activity: activity.name, Time: 270, fill: "rgb(203, 166, 247)" },
+  ];
 
-const chartConfig = {
-  Total: {
-    label: "hours",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig;
-
-export function ClientCard({ client }: { client: Client }) {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, [chartData]);
+  const formattedDate = new Date(activity.createdAt).toLocaleDateString(
+    undefined,
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col border-none">
+      {/* <pre className="z-50">{JSON.stringify(activity, null, 2)}</pre> */}
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>{`Activity name: ${activity.name}`}</CardTitle>
+        <CardDescription>{`Created at ${formattedDate}`}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -77,8 +63,8 @@ export function ClientCard({ client }: { client: Client }) {
             />
             <Pie
               data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              dataKey="Time"
+              nameKey="activity"
               innerRadius={60}
               strokeWidth={5}
             >
@@ -97,7 +83,10 @@ export function ClientCard({ client }: { client: Client }) {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {getTimeDifference(
+                            activity.createdAt,
+                            activity.endAt as Date
+                          )}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -117,10 +106,10 @@ export function ClientCard({ client }: { client: Client }) {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          {`Client: ${activity.clientId}`}
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          {`Client: ${activity.projectId}`}
         </div>
       </CardFooter>
     </Card>

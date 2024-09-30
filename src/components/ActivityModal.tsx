@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Drawer, DrawerTrigger, DrawerContent } from "./ui/drawer";
 import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { Button } from "./ui/button";
+import { ActivityCard } from "@/components/ActivityCard";
 
 export default function ActivityModal({
   activity,
@@ -46,7 +47,8 @@ export default function ActivityModal({
           )}
         >
           <div className="flex h-full flex-col overflow-auto">
-            <pre className="z-50">{JSON.stringify(activity, null, 2)}</pre>
+            <ActivityCard activity={activity} />
+            {/* <pre className="z-50">{JSON.stringify(activity, null, 2)}</pre> */}
           </div>
         </DrawerContent>
       </Drawer>
@@ -61,11 +63,12 @@ export default function ActivityModal({
       <SheetContent
         side="right"
         className={cn(
-          "flex flex-col gap-0 border-l-0 p-0 dark:border-l sm:max-w-sm md:w-[700px] md:max-w-[700px]",
+          "flex flex-col justify-center gap-0  p-0  sm:max-w-sm md:w-[700px] md:max-w-[700px]",
           className
         )}
       >
-        <pre className="z-50">{JSON.stringify(activity, null, 2)}</pre>
+        <ActivityCard activity={activity} />
+        {/* <pre className="z-50">{JSON.stringify(activity, null, 2)}</pre> */}
       </SheetContent>
     </Sheet>
   );
